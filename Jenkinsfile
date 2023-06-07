@@ -85,7 +85,12 @@ pipeline {
                 }
             }
         }
-
+        stage('configure server with cromedriver') {
+            steps {
+                echo 'Configuring test-server'
+                ansiblePlaybook become: true, credentialsId: 'sshnew', disableHostKeyChecking: true, installation: 'Ansible', inventory: '/etc/ansible/hosts', playbook: 'chrometest.yml'
+            }
+        }
         stage('Run the Selenium runnable jar') {
             steps {
                 sh 'java -jar Medicure.jar'
@@ -118,6 +123,12 @@ pipeline {
                     kubectl apply -f prod-deployment.yml
                     """
                 }
+            }
+        }
+        stage('Install node exporter ') {
+            steps {
+                echo 'Configuring test-server'
+                ansiblePlaybook become: true, credentialsId: 'sshnew', disableHostKeyChecking: true, installation: 'Ansible', inventory: '/etc/ansible/hosts', playbook: 'nodeexp.yml'
             }
         }
     }
