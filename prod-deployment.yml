@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: healthcare-prod-deployment
+  namespace: prod
+  labels:
+    app: healthcare-prod-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: healthcare-prod-app
+  template:
+    metadata:
+      labels:
+        app: healthcare-prod-app
+    spec:
+      containers:
+      - name: medicure-prod-app
+        image: ashnike/healthcare:1.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8082
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: healthcare-prod-service
+  namespace: prod
+spec:
+  selector:
+    app: healthcare-prod-app
+  type: NodePort
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8082
+    protocol: TCP
+    nodePort: 31001
