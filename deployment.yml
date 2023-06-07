@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: healthcare-test
+  labels:
+    app: healthcare
+spec:
+  selector:
+    matchLabels:
+        app: healthcare-test
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: healthcare-test
+    spec:
+      containers:
+        - name:healthcare-test
+          image: ashnike/healthcare:1.0
+          ports:
+            - containerPort: 8082
+              protocol: TCP
+          imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: health-test-service
+  namespace: test
+spec:
+  selector:
+    app: healthcare-test
+  type: NodePort
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8082
+    protocol: TCP
+    nodePort: 31000
