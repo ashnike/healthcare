@@ -91,6 +91,11 @@ pipeline {
                 sh 'java -jar Medicure.jar'
             }
         }
+         stage('publishrep') {
+            steps {
+                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, includes: 'screenshot.png', keepAll: false, reportDir: '/var/lib/jenkins/workspace/HealthcareApp', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+            }
+        }
         stage('Create EKS  Prod Cluster using Terraform') {
             steps {
                 dir('/home/ubuntu/prodcluster') {
